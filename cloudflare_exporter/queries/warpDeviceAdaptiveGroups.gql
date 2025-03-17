@@ -1,0 +1,25 @@
+# Query for WARP Devices metrics from Cloudflare API
+query warpDeviceAdaptiveGroups(
+  $accountId: String!
+  $datetimeGeq: String!
+  $datetimeLeq: String!
+) {
+  viewer {
+    accounts(filter: { accountTag: $accountId }) {
+      warpDeviceAdaptiveGroups(
+        filter: {
+          datetime_geq: $datetimeGeq
+          datetime_leq: $datetimeLeq
+        }
+        limit: 1000
+      ) {
+        dimensions {
+          clientPlatform
+          clientVersion
+          status
+        }
+        count
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cloudflare-prometheus-exporter"
+version = "0.1.0"
+description = "A Prometheus exporter for Cloudflare Analytics metrics"
+readme = "README.md"
+requires-python = ">=3.13"
+license = {text = "MIT"}
+authors = [
+    {name = "Krzysztof Kołodziejczyk", email = "k.kolodziejczyk3@gmail.com"},
+]
+
+[tool.semantic_release]
+version_variable = [
+    "cloudflare_exporter/__init__.py:__version__",
+    "setup.py:version"
+]
+branch = "main"
+upload_to_pypi = false
+upload_to_release = true
+build_command = "pip install build && python -m build"
+commit_message = "chore(release): bump version to {version}"
+
+[tool.black]
+line-length = 88
+target-version = ["py313"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+lint.select = ["E", "F", "B", "I", "N", "UP", "PL", "RUF"]
+
+[tool.ruff.lint.pylint]
+max-args = 10
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=cloudflare_exporter --cov-report=term-missing"

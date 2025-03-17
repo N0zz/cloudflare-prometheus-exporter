@@ -1,0 +1,30 @@
+# Query for HTTP requests metrics from Cloudflare Analytics API
+# Fetches overview metrics grouped by country and response status
+query HttpRequestsOverview(
+  $zoneTag: String!
+  $datetimeGeq: String!
+  $datetimeLeq: String!
+) {
+  viewer {
+    zones(filter: { zoneTag: $zoneTag }) {
+      httpRequestsOverviewAdaptiveGroups(
+        filter: {
+          datetime_geq: $datetimeGeq
+          datetime_leq: $datetimeLeq
+        }
+        limit: 1000
+      ) {
+        dimensions {
+          clientCountryName
+          edgeResponseStatus
+        }
+        sum {
+          requests
+          cachedRequests
+          bytes
+          cachedBytes
+        }
+      }
+    }
+  }
+}
