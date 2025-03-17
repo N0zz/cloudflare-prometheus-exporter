@@ -35,6 +35,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add helm/charts/*
+          git add -f helm/charts/*
           git commit -m "Update Helm chart and index.yaml" || echo "No changes to commit"
           git push
