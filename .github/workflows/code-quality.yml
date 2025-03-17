@@ -1,0 +1,67 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pull-requests: write  # For commenting test results
+  checks: write        # For test reporting
+  id-token: write     # Required for Codecov token
+
+env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+jobs:
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.13"]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Required for proper coverage reporting
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pipenv'  # Enable Python package caching
+
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+
+    - name: Install dependencies
+      run: pipenv install --dev
+
+    - name: Check code formatting (black)
+      run: pipenv run black . --check
+
+    - name: Run linting (ruff)
+      run: pipenv run ruff check .
+
+    - name: Run type checking (mypy)
+      run: pipenv run mypy .
+
+    - name: Run security checks (bandit)
+      run: pipenv run security-check
+
+    - name: Run tests with coverage
+      run: pipenv run test
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4
+      env:
+        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
+      with:
+        fail_ci_if_error: true
+        flags: unittests
+        verbose: true 

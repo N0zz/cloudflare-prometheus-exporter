@@ -1,0 +1,29 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    ":semanticCommits"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["pip_requirements", "pipenv"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/"
+    }
+  ],
+  "pipenv": {
+    "enabled": true
+  },
+  "pip_requirements": {
+    "fileMatch": ["^Pipfile$", "^setup\\.py$", "^pyproject\\.toml$"]
+  },
+  "docker": {
+    "enabled": true
+  },
+  "github-actions": {
+    "enabled": true
+  },
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "schedule": ["after 10pm and before 5am every weekday", "every weekend"]
+}

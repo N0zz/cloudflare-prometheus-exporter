@@ -1,0 +1,47 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+# Core dependencies
+cloudflare = "==4.0.0"
+prometheus-client = "==0.21.1"
+python-dotenv = "==1.0.1"
+python-json-logger = "==3.2.1"
+requests = "==2.32.3"
+pydantic = "==2.10.6"
+pydantic-settings = "==2.8.1"
+
+[dev-packages]
+# Testing
+pytest = "==8.3.5"
+pytest-cov = "==6.0.0"
+pytest-mock = "==3.14.0"
+
+# Type checking
+mypy = "==1.15.0"
+types-requests = "==2.32.0.20250306"
+types-setuptools = "==75.8.2.20250305"
+
+# Security scanning
+bandit = "==1.8.3"
+
+# Linting
+ruff = "==0.9.10"
+black = "==25.1.0"
+
+[requires]
+python_version = "3.13"
+
+[scripts]
+test = "pytest tests/ --cov=cloudflare_exporter --cov-report=term-missing"
+lint = "ruff check ."
+format = "black ."
+typecheck = "mypy ."
+security-check = "sh -c 'bandit -r ./cloudflare_exporter'"
+build-helm-chart = "helm package helm/cloudflare-prometheus-exporter"
+build-docker-image = "docker buildx build --platform linux/amd64,linux/arm64 -t cloudflare-prometheus-exporter:latest ."
+
+[pipenv]
+allow_prereleases = false

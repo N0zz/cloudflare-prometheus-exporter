@@ -1,0 +1,40 @@
+name: Publish Helm Chart
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main branch
+  pull_request:
+    branches:
+      - main  # Optionally trigger on pull requests to main branch
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          helm-version: '3.17.1'
+
+      - name: Package Helm Chart
+        run: |
+          chart_version=$(grep '^version:' helm/cloudflare-prometheus-exporter/Chart.yaml | awk '{print $2}')
+          helm package helm/cloudflare-prometheus-exporter --version $chart_version
+          mv cloudflare-prometheus-exporter-$chart_version.tgz helm/charts/
+
+      - name: Generate index.yaml
+        run: |
+          helm repo index helm/charts --url https://n0zz.github.io/cloudflare-prometheus-exporter/charts
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add helm/charts/*
+          git commit -m "Update Helm chart and index.yaml" || echo "No changes to commit"
+          git push
