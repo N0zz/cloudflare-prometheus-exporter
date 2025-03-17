@@ -30,8 +30,8 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev
-      - name: Run tests
-        run: pipenv run test
+      - name: Run unit tests
+        run: pipenv run unit-test
       - name: Run linting
         run: pipenv run lint
       - name: Run type checking

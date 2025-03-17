@@ -127,8 +127,11 @@ helm install my-release cloudflare-exporter/cloudflare-prometheus-exporter
 # Install development dependencies
 pipenv install --dev
 
-# Run tests
-pipenv run test
+# Run unit tests
+pipenv run unit-test
+
+# Run integration tests - only running locally, requires valid Cloudflare token
+pipenv run integration-test
 
 # Run type checking
 pipenv run typecheck
