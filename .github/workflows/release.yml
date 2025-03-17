@@ -30,6 +30,9 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev
+      - name: Setup dummy Cloudflare token
+        run: |
+          echo "CF_API_TOKEN=dummy" >> $GITHUB_ENV
       - name: Run unit tests
         run: pipenv run unit-test
       - name: Run linting

@@ -54,6 +54,10 @@ jobs:
     - name: Run security checks (bandit)
       run: pipenv run security-check
 
+    - name: Setup dummy Cloudflare token
+      run: |
+        echo "CF_API_TOKEN=dummy" >> $GITHUB_ENV
+
     - name: Run unit tests with coverage
       run: pipenv run unit-test
 
