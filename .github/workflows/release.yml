@@ -1,13 +1,11 @@
 name: Release and Publish
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
 permissions:
-  contents: write    # Required for creating releases
+  contents: write   # Required for creating releases
   pull-requests: write
   packages: write   # Required for publishing packages
   id-token: write   # Required for Docker Hub authentication
@@ -15,6 +13,7 @@ permissions:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
   test:
@@ -40,9 +39,9 @@ jobs:
       - name: Run type checking
         run: pipenv run typecheck
 
-  release:
+  release-gh:
     needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,13 +51,13 @@ jobs:
         id: semantic_release
         uses: python-semantic-release/python-semantic-release@v8.7.0
         with:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GH_TOKEN }}
       - name: Set version output
         run: echo "VERSION=${{ steps.semantic_release.outputs.version }}" >> $GITHUB_ENV
 
-  docker:
-    needs: release
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  release-docker:
+    needs: release-gh
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -85,3 +84,30 @@ jobs:
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:latest
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ github.sha }}
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ env.VERSION }}
+
+  release-chart:
+    needs: release-gh
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        env:
+          GITHUB_TOKEN: "${{ env.GH_TOKEN }}"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          charts_dir: helm/charts
+          pages_branch: gh_pages
