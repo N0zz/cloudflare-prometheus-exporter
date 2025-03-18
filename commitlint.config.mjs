@@ -4,4 +4,5 @@ module.exports = {
     'subject-empty': [2, 'never'],
     'type-empty': [2, 'never'],
   },
-}; 
+
+};
