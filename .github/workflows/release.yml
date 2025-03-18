@@ -49,9 +49,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: Python Semantic Release
+        id: semantic_release
         uses: python-semantic-release/python-semantic-release@v8.7.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Set version output
+        run: echo "VERSION=${{ steps.semantic_release.outputs.version }}" >> $GITHUB_ENV
 
   docker:
     needs: release
@@ -81,3 +84,4 @@ jobs:
           tags: |
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:latest
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ github.sha }}
+            ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ env.VERSION }}

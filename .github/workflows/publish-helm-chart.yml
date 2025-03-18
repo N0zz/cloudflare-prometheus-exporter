@@ -3,7 +3,10 @@ name: Helm Chart Publish
 on:
   push:
     branches:
-      - main
+      - main  # Trigger on push to main branch
+  pull_request:
+    branches:
+      - main  # Optionally trigger on pull requests to main branch
 
 jobs:
   build-and-publish:
