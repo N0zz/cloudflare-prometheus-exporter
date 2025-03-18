@@ -13,7 +13,7 @@ permissions:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   test:
@@ -51,7 +51,7 @@ jobs:
         id: semantic_release
         uses: python-semantic-release/python-semantic-release@v8.7.0
         with:
-          GITHUB_TOKEN: ${{ env.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       - name: Set version output
         run: echo "VERSION=${{ steps.semantic_release.outputs.version }}" >> $GITHUB_ENV
 
@@ -104,7 +104,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v4
         env:
-          GITHUB_TOKEN: "${{ env.GH_TOKEN }}"
+          GITHUB_TOKEN: "${{ env.GITHUB_TOKEN }}"
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
