@@ -187,9 +187,9 @@ scrape_configs:
 
 ## Grafana Dashboard
 
-// TODO : no grafana dashboard exists yet
+Grafana dashboard: [Grafana Cloud](https://grafana.com/grafana/dashboards/23115)
 
-A sample Grafana dashboard is available in the `dashboards` directory.
+![Dashboard](assets/dashboard.png)
 
 ## Further Reading
 
