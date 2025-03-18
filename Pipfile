@@ -37,6 +37,7 @@ python_version = "3.13"
 [scripts]
 test = "pytest tests/ --cov=cloudflare_exporter --cov-report=term-missing"
 unit-test = "pytest tests/unit/ --cov=cloudflare_exporter --cov-report=term-missing"
+unit-test-report = "pytest tests/unit/ --cov=cloudflare_exporter --cov-report=xml"
 integration-test = "pytest tests/integration/ --cov=cloudflare_exporter --cov-report=term-missing"
 lint = "ruff check ."
 format = "black ."
