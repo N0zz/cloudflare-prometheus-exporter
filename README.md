@@ -39,7 +39,7 @@ Configuration is handled via environment variables or `.env` file:
 | `CF_LISTEN_PORT` | No | `8080` | Port to expose Prometheus metrics on (range: 1024-65535) |
 | `CF_LOG_LEVEL` | No | `INFO` | Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL) |
 | `CF_MAX_WORKERS` | No | `5` | Maximum number of concurrent worker threads (range: 3-10) |
-| `CF_API_URL` | No | `https://api.cloudflare.com/client/v4/graphql` | Cloudflare GraphQL API endpoint |
+| `CF_API_URL` | No | [URL](https://api.cloudflare.com/client/v4/graphql) | Cloudflare GraphQL API endpoint |
 | `CF_CMB_REGION` | No | `global` | Region for CMB compliance ('global', 'eu', or 'us') |
 | `CF_SCRAPE_DELAY` | No | `60` | Scrape interval in seconds (60-300, must be multiple of 60) |
 | `CF_ZONES` | No | - | Comma-separated list of zone IDs to monitor |
