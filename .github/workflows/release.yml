@@ -1,0 +1,126 @@
+name: Release and Publish
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: '3.13'
+          cache: 'pipenv'
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          pipenv install --dev
+      - name: Setup dummy Cloudflare token
+        run: |
+          echo "CF_API_TOKEN=dummy" >> $GITHUB_ENV
+      - name: Run unit tests
+        run: pipenv run unit-test
+      - name: Run linting
+        run: pipenv run lint
+      - name: Run type checking
+        run: pipenv run typecheck
+
+  release-gh:
+    needs: test
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      packages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Python Semantic Release
+        id: semantic_release
+        uses: python-semantic-release/python-semantic-release@26bb37cfab71a5a372e3db0f48a6eac57519a4a6 # 9.21.0
+        with:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+      - name: Set version output
+        run: echo "VERSION=${{ steps.semantic_release.outputs.version }}" >> $GITHUB_ENV
+
+  release-docker:
+    needs: release-gh
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+      
+      - name: Build and push
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:latest
+            ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ github.sha }}
+            ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ env.VERSION }}
+
+  release-chart:
+    needs: release-gh
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@b9e51907a09c216f16ebe8536097933489208112 # v4.3.0
+        env:
+          GITHUB_TOKEN: "${{ env.GITHUB_TOKEN }}"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
+        with:
+          charts_dir: helm/charts
+          pages_branch: gh_pages

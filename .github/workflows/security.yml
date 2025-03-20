@@ -1,0 +1,76 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sundays
+
+permissions:
+  contents: read
+
+# Ensure we don't have multiple concurrent scans
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30  # Add timeout to prevent hanging jobs
+
+    permissions:
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          pipenv install --dev
+
+      - name: Run Python security checks
+        run: pipenv run security-check
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # v0.30.0
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Build Docker image for scanning
+        run: docker build -t cloudflare-exporter:${{ github.sha }} .
+
+      - name: Run Trivy vulnerability scanner in image mode
+        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # v0.30.0
+        with:
+          image-ref: 'cloudflare-exporter:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-image-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@51de6a802f1e85a8dce37a0d6a87f660dd50e663 # v3.28.11
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: 'trivy-code-scan'  # Unique category for code scan results
+
+      - name: Upload Trivy image scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@51de6a802f1e85a8dce37a0d6a87f660dd50e663 # v3.28.11
+        if: always()
+        with:
+          sarif_file: 'trivy-image-results.sarif'
+          category: 'trivy-image-scan'  # Unique category for image scan results

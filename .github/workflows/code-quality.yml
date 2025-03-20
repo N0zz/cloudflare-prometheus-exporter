@@ -1,0 +1,76 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+jobs:
+
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+
+    permissions:
+      checks: write # For test reporting
+      pull-requests: write # For commenting test results
+      id-token: write # Required for Codecov token
+
+    strategy:
+      matrix:
+        python-version: ["3.13"]
+
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        fetch-depth: 0  # Required for proper coverage reporting
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pipenv'  # Enable Python package caching
+
+    - name: Install pipenv
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+
+    - name: Install dependencies
+      run: pipenv install --dev
+
+    - name: Check code formatting (black)
+      run: pipenv run black . --check
+
+    - name: Run linting (ruff)
+      run: pipenv run ruff check .
+
+    - name: Run type checking (mypy)
+      run: pipenv run mypy .
+
+    - name: Run security checks (bandit)
+      run: pipenv run security-check
+
+    - name: Setup dummy Cloudflare token
+      run: |
+        echo "CF_API_TOKEN=dummy" >> $GITHUB_ENV
+
+    - name: Run unit tests with coverage
+      run: pipenv run unit-test-report
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # 5.4.0
+      env:
+        CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
+      with:
+        file: coverage.xml
+        fail_ci_if_error: true
+        flags: unittests
+        verbose: true
