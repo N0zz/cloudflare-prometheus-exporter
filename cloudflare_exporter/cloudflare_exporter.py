@@ -259,6 +259,7 @@ def cloudflare_fetch_metrics(
 
             # Determine the variables based on the dataset
             if dataset in [
+                "dnsAnalyticsAdaptiveGroups",
                 "httpRequestsOverviewAdaptiveGroups",
                 "firewallEventsAdaptiveGroups",
             ]:
