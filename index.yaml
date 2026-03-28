@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   cloudflare-prometheus-exporter:
   - apiVersion: v2
+    appVersion: 0.2.4
+    created: "2026-03-28T23:15:00.342023098Z"
+    description: A Helm chart for deploying Cloudflare Prometheus Exporter
+    digest: 9630fdfa95df7f473ccd1e25b7175e36b2fdd68fdf20b6350a967cb715cd586e
+    name: cloudflare-prometheus-exporter
+    type: application
+    urls:
+    - https://github.com/N0zz/cloudflare-prometheus-exporter/releases/download/cloudflare-prometheus-exporter-0.2.2/cloudflare-prometheus-exporter-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v2
     appVersion: 0.1.0
     created: "2026-03-28T13:11:17.019210253Z"
     description: A Helm chart for deploying Cloudflare Prometheus Exporter
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/N0zz/cloudflare-prometheus-exporter/releases/download/cloudflare-prometheus-exporter-0.1.0/cloudflare-prometheus-exporter-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-28T13:11:17.019220793Z"
+generated: "2026-03-28T23:15:00.342030732Z"
