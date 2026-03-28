@@ -185,19 +185,42 @@ def test_cloudflare_fetch_metrics_success(
 
 @patch("cloudflare_exporter.cloudflare_exporter._get_query")
 @patch("cloudflare_exporter.cloudflare_exporter._make_cloudflare_request")
-def test_cloudflare_fetch_metrics_error_handling(
+def test_cloudflare_fetch_metrics_graphql_error_increments_counter(
     mock_request: MagicMock,
     mock_get_query: MagicMock,
     mock_client: MagicMock,
     mock_config: CloudflareConfig,
     mock_account: MagicMock,
 ) -> None:
-    """Test metrics fetch error handling."""
+    """Test that GraphQL errors increment the scrape error counter."""
     mock_get_query.return_value = "query { test }"
     mock_request.return_value = {"errors": [{"message": "Test error"}]}
 
-    # Should not raise exception but log error
-    cloudflare_fetch_metrics(mock_account, mock_client, mock_config, ["zone1"])
+    mock_collector = MagicMock()
+    with patch("cloudflare_exporter.cloudflare_exporter.COLLECTOR", mock_collector):
+        cloudflare_fetch_metrics(mock_account, mock_client, mock_config, ["zone1"])
+
+    assert mock_collector.increment_error_counter.called
+
+
+@patch("cloudflare_exporter.cloudflare_exporter._get_query")
+@patch("cloudflare_exporter.cloudflare_exporter._make_cloudflare_request")
+def test_cloudflare_fetch_metrics_exception_increments_counter(
+    mock_request: MagicMock,
+    mock_get_query: MagicMock,
+    mock_client: MagicMock,
+    mock_config: CloudflareConfig,
+    mock_account: MagicMock,
+) -> None:
+    """Test that processing exceptions increment the scrape error counter."""
+    mock_get_query.return_value = "query { test }"
+    mock_request.side_effect = RuntimeError("connection failed")
+
+    mock_collector = MagicMock()
+    with patch("cloudflare_exporter.cloudflare_exporter.COLLECTOR", mock_collector):
+        cloudflare_fetch_metrics(mock_account, mock_client, mock_config, ["zone1"])
+
+    assert mock_collector.increment_error_counter.called
 
 
 def test_process_metrics_data_http_requests() -> None:
