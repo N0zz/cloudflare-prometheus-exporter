@@ -28,6 +28,9 @@ podAnnotations: {}
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 
+# Additional labels to add to all resources
+labels: {}
+
 podSecurityContext:
   {}
   # fsGroup: 2000
@@ -66,10 +69,12 @@ livenessProbe:
   httpGet:
     path: /
     port: http
+  initialDelaySeconds: 10
 readinessProbe:
   httpGet:
     path: /
     port: http
+  initialDelaySeconds: 10
 
 # Additional volumes on the output Deployment definition.
 volumes: []
@@ -90,6 +95,6 @@ tolerations: []
 
 affinity: {}
 
-servicemonitor:
+serviceMonitor:
   enabled: true
   interval: 60s

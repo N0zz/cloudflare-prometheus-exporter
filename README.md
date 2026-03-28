@@ -129,6 +129,8 @@ helm install my-release cloudflare-exporter/cloudflare-prometheus-exporter
 - [Python 3.13](https://www.python.org/downloads/)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) - Python package manager
 - [just](https://github.com/casey/just#installation) - Command runner
+- [Helm](https://helm.sh/docs/intro/install/) - Kubernetes package manager (optional, for chart development)
+- [yq](https://github.com/mikefarah/yq#install) - YAML processor (optional, for chart template validation)
 - [Trivy](https://trivy.dev/docs/latest/guide/) - Vulnerability scanner (optional, for local security scans)
 
 ### Setup

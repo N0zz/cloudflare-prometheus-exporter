@@ -47,6 +47,12 @@ trivy-scan:
 trivy-image: build-docker-image
     trivy image --severity CRITICAL,HIGH --ignore-unfixed cloudflare-prometheus-exporter:latest
 
+# Validate Helm chart templates
+helm-template:
+    helm template test helm/cloudflare-prometheus-exporter > /tmp/helm-output.yaml
+    yq eval '.' /tmp/helm-output.yaml > /dev/null
+    yq eval '.kind + "/" + .metadata.name' /tmp/helm-output.yaml
+
 # Build Helm chart
 build-helm-chart:
     helm package helm/cloudflare-prometheus-exporter
