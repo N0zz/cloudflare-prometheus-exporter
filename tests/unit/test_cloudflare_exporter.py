@@ -5,6 +5,8 @@ import pytest
 import requests
 
 from cloudflare_exporter.cloudflare_exporter import (
+    _buffer_metrics,
+    _get_datasets,
     _make_cloudflare_request,
     _process_metrics_data,
     _rounddown_time,
@@ -12,6 +14,11 @@ from cloudflare_exporter.cloudflare_exporter import (
     cloudflare_fetch_metrics,
 )
 from cloudflare_exporter.config import CloudflareConfig, CmbRegion
+from cloudflare_exporter.metrics import (
+    CloudflareCollector,
+    FirewallEventEntry,
+    HttpRequestEntry,
+)
 
 # Add these constants at the top of the file
 TEST_REQUEST_COUNT = 100
@@ -241,3 +248,97 @@ def test_process_metrics_data_firewall_events() -> None:
     for item in processed_firewall:
         assert "count" in item
         assert item["count"] == TEST_FIREWALL_EVENT_COUNT  # type: ignore[typeddict-item]
+
+
+def test_get_datasets_eu(mock_config: CloudflareConfig) -> None:
+    """Test dataset selection for EU region."""
+    mock_config.cmb_region = CmbRegion.EU
+    datasets = _get_datasets(mock_config)
+    assert "httpRequestsOverviewAdaptiveGroups" in datasets
+    assert "firewallEventsAdaptiveGroups" in datasets
+    assert "dnsAnalyticsAdaptiveGroups" not in datasets
+
+
+def test_get_datasets_global(mock_config: CloudflareConfig) -> None:
+    """Test dataset selection for global region."""
+    mock_config.cmb_region = CmbRegion.GLOBAL
+    datasets = _get_datasets(mock_config)
+    assert "httpRequestsOverviewAdaptiveGroups" in datasets
+    assert "firewallEventsAdaptiveGroups" in datasets
+    assert "dnsAnalyticsAdaptiveGroups" in datasets
+
+
+def test_get_datasets_with_exclusion(mock_config: CloudflareConfig) -> None:
+    """Test dataset selection with exclusions."""
+    mock_config.cmb_region = CmbRegion.GLOBAL
+    mock_config.exclude_datasets = "firewallEventsAdaptiveGroups"
+    datasets = _get_datasets(mock_config)
+    assert "firewallEventsAdaptiveGroups" not in datasets
+    assert "httpRequestsOverviewAdaptiveGroups" in datasets
+
+
+TEST_TIMESTAMP = 1234567890.0
+
+
+def test_buffer_metrics_http() -> None:
+    """Test buffering HTTP metrics."""
+    processed: list[HttpRequestEntry | FirewallEventEntry] = [
+        {
+            "dimensions": {"clientCountryName": "US", "edgeResponseStatus": 200},
+            "sum": {
+                "requests": 100,
+                "bytes": 1024,
+                "cachedRequests": 0,
+                "cachedBytes": 0,
+            },
+        }
+    ]
+    http_buf: list[dict[str, object]] = []
+    fw_buf: list[dict[str, object]] = []
+    _buffer_metrics(processed, "example.com", TEST_TIMESTAMP, http_buf, fw_buf)
+    assert len(http_buf) == 1
+    assert len(fw_buf) == 0
+    assert http_buf[0]["zone"] == "example.com"
+    assert http_buf[0]["timestamp"] == TEST_TIMESTAMP
+
+
+def test_buffer_metrics_firewall() -> None:
+    """Test buffering firewall metrics."""
+    processed: list[HttpRequestEntry | FirewallEventEntry] = [
+        {
+            "dimensions": {"action": "block", "ruleId": "r1", "source": "waf"},
+            "count": 50,
+        }
+    ]
+    http_buf: list[dict[str, object]] = []
+    fw_buf: list[dict[str, object]] = []
+    _buffer_metrics(processed, "example.com", TEST_TIMESTAMP, http_buf, fw_buf)
+    assert len(http_buf) == 0
+    assert len(fw_buf) == 1
+    assert fw_buf[0]["zone"] == "example.com"
+
+
+def test_swap_metrics() -> None:
+    """Test atomic metrics swap."""
+    collector = CloudflareCollector()
+    collector.http_metrics_data = [{"old": "data"}]  # type: ignore[list-item]
+    collector.firewall_metrics_data = [{"old": "fw"}]  # type: ignore[list-item]
+
+    new_http = [{"new": "http"}]
+    new_fw = [{"new": "fw"}]
+    collector.swap_metrics(new_http, new_fw)
+
+    assert collector.http_metrics_data == [{"new": "http"}]
+    assert collector.firewall_metrics_data == [{"new": "fw"}]
+
+
+def test_swap_metrics_empty_clears() -> None:
+    """Test that empty swap clears metrics."""
+    collector = CloudflareCollector()
+    collector.http_metrics_data = [{"old": "data"}]  # type: ignore[list-item]
+    collector.firewall_metrics_data = [{"old": "fw"}]  # type: ignore[list-item]
+
+    collector.swap_metrics([], [])
+
+    assert collector.http_metrics_data == []
+    assert collector.firewall_metrics_data == []
