@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.1.4 (2026-03-28)
+
+### Bug Fixes
+
+- Bump ruff to v0.15.8 and python-json-logger to v4
+  ([#30](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/30),
+  [`da9fd2b`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/da9fd2b27951d6b3984f7c2fc0f5de74fdc670ed))
+
+
 ## v0.1.3 (2026-03-28)
 
 ### Bug Fixes
