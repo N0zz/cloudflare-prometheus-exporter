@@ -27,6 +27,10 @@
     {
       "matchManagers": ["docker-compose", "dockerfile"],
       "groupName": "docker images"
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
     }
   ],
   "github-actions": {
