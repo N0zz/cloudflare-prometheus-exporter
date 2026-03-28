@@ -8,7 +8,6 @@ on:
       - 'pyproject.toml'
       - 'uv.lock'
       - 'Dockerfile'
-      - 'helm/**'
   pull_request:
     branches: [ main ]
     paths:
@@ -16,7 +15,6 @@ on:
       - 'pyproject.toml'
       - 'uv.lock'
       - 'Dockerfile'
-      - 'helm/**'
   release:
     types: [ published ]
 
@@ -145,7 +143,7 @@ jobs:
           tags: |
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ needs.release-gh.outputs.version }}-rc
 
-  # On manual release publish: tag final docker image + publish chart
+  # On manual release publish: tag final docker image
   release-docker:
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
@@ -178,64 +176,3 @@ jobs:
           tags: |
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ steps.version.outputs.version }}
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:latest
-
-  release-chart:
-    if: github.event_name == 'release' || github.event_name == 'push'
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-      pull-requests: write
-
-    steps:
-      - name: Generate App Token
-        id: app-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Install Helm
-        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
-        env:
-          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
-
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
-        env:
-          CR_TOKEN: "${{ steps.app-token.outputs.token }}"
-        with:
-          charts_dir: helm
-          pages_branch: gh_pages
-
-      - name: Update chart release notes
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          CHART_REPO="https://n0zz.github.io/cloudflare-prometheus-exporter"
-          CHART_TAG=$(gh release list --json tagName,isDraft -q '.[] | select(.tagName | startswith("cloudflare-prometheus-exporter-")) | .tagName' | head -1)
-          if [ -n "$CHART_TAG" ]; then
-            NOTES=$(gh release view "$CHART_TAG" --json body -q .body)
-            gh release edit "$CHART_TAG" --notes "${NOTES}
-
-          ## Install
-
-          \`\`\`bash
-          helm repo add cloudflare-exporter ${CHART_REPO}
-          helm repo update
-          helm install my-release cloudflare-exporter/cloudflare-prometheus-exporter
-          \`\`\`
-
-          [Chart Repository](${CHART_REPO}) | [Documentation](https://github.com/N0zz/cloudflare-prometheus-exporter)"
-          fi
