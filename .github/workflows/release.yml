@@ -3,8 +3,18 @@ name: Release
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'cloudflare_exporter/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'Dockerfile'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'cloudflare_exporter/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'Dockerfile'
   release:
     types: [ published ]
 
