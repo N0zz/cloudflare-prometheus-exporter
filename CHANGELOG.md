@@ -2,6 +2,27 @@
 
 <!-- version list -->
 
+## v0.2.4 (2026-03-28)
+
+### Bug Fixes
+
+- **helm**: Improve chart configuration and conventions
+  ([#43](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/43),
+  [`97b8f4a`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/97b8f4a02ce56169a9a2e385cd317880596aa47d))
+
+### Chores
+
+- **helm**: Bump chart version to 0.2.1
+  ([#45](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/45),
+  [`8b2bafa`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/8b2bafab8c9821942a11d765f8ed071be33d6909))
+
+### Continuous Integration
+
+- Trigger chart release on helm file changes
+  ([#44](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/44),
+  [`fa891d9`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/fa891d9ccf5ea2fb034ca1dc5c83ae69d9283d5f))
+
+
 ## v0.2.3 (2026-03-28)
 
 ### Bug Fixes
