@@ -2,6 +2,41 @@
 
 <!-- version list -->
 
+## v0.2.1 (2026-03-28)
+
+### Bug Fixes
+
+- Regenerate uv.lock during semantic-release version bump
+  ([#39](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/39),
+  [`9226b3d`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/9226b3df9a6245c32313e06589b2a339dbe6ca80))
+
+- Update python version badge to match requires-python
+  ([#38](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/38),
+  [`77611a8`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/77611a8f6bd84b8d1b02468405c76f8ec23502a7))
+
+### Chores
+
+- Add docker and helm info to release notes
+  ([#34](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/34),
+  [`e6f1f6b`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/e6f1f6b4f81f48b6d7b89d3698e1fa0fc4052220))
+
+- Add path filter to release workflow
+  ([#36](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/36),
+  [`e647903`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/e647903726b153a19acabcc17058dbbc8c70c2d8))
+
+- Consolidate pytest config into pyproject.toml
+  ([#37](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/37),
+  [`b3b003e`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/b3b003e4c179dbca8bfdb1123bcb2597d6c4020c))
+
+- Remove pr docker image build
+  ([#35](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/35),
+  [`80fe0c5`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/80fe0c555d2f90e65f3809583045b58346c858d1))
+
+- Remove redundant main push triggers from ci workflows
+  ([#33](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/33),
+  [`8f33da4`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/8f33da4afe835fadfe20f869d0591acc9154810b))
+
+
 ## v0.2.0 (2026-03-28)
 
 ### Features
