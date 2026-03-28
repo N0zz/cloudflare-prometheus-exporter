@@ -12,7 +12,6 @@ from .metrics import (
     COLLECTOR,
     FirewallEventEntry,
     HttpRequestEntry,
-    prometheus_generate_metrics,
 )
 
 load_dotenv()
@@ -176,20 +175,8 @@ def _process_metrics_data(
     return processed_data
 
 
-def cloudflare_fetch_metrics(
-    account: Any, client: Any, config: CloudflareConfig, zones: list[str]
-) -> None:
-    """Fetch metrics from Cloudflare for all configured zones.
-
-    Args:
-        client: Cloudflare API client
-        config: Application configuration dictionary
-        zones: List of zone IDs to fetch metrics for
-    """
-
-    # Clean up old metrics after new ones are fetched
-    COLLECTOR.cleanup_old_metrics()
-
+def _get_datasets(config: CloudflareConfig) -> list[str]:
+    """Get the list of datasets to fetch based on CMB region config."""
     if config.cmb_region == "eu":
         datasets = [
             "httpRequestsOverviewAdaptiveGroups",
@@ -215,10 +202,55 @@ def cloudflare_fetch_metrics(
             # "cdnNetworkAnalyticsAdaptiveGroups",
             # "warpDeviceAdaptiveGroups",
         ]
+    return _filter_datasets(datasets, config.exclude_datasets)
 
+
+def _buffer_metrics(
+    processed_data: list[HttpRequestEntry | FirewallEventEntry],
+    zone_name: str,
+    metric_timestamp: float,
+    http_buffer: list[dict[str, Any]],
+    firewall_buffer: list[dict[str, Any]],
+) -> None:
+    """Add processed metric entries to the appropriate buffer."""
+    for entry in processed_data:
+        if "sum" in entry:
+            http_buffer.append(
+                {
+                    "dimensions": entry["dimensions"],
+                    "sum": entry["sum"],
+                    "zone": zone_name,
+                    "timestamp": metric_timestamp,
+                }
+            )
+        elif "count" in entry:
+            firewall_buffer.append(
+                {
+                    "dimensions": entry["dimensions"],
+                    "count": entry["count"],
+                    "zone": zone_name,
+                    "timestamp": metric_timestamp,
+                }
+            )
+
+
+def cloudflare_fetch_metrics(
+    account: Any, client: Any, config: CloudflareConfig, zones: list[str]
+) -> None:
+    """Fetch metrics from Cloudflare for all configured zones.
+
+    Args:
+        client: Cloudflare API client
+        config: Application configuration dictionary
+        zones: List of zone IDs to fetch metrics for
+    """
+
+    # Buffers for atomic swap — collect all metrics first, then swap at the end
+    new_http_metrics: list[dict[str, Any]] = []
+    new_firewall_metrics: list[dict[str, Any]] = []
+
+    datasets = _get_datasets(config)
     free_datasets = ["httpRequestsOverviewAdaptiveGroups"]
-
-    datasets = _filter_datasets(datasets, config.exclude_datasets)
 
     headers = {
         "Authorization": f"Bearer {config.api_token}",
@@ -229,6 +261,11 @@ def cloudflare_fetch_metrics(
     timestamp_end = _rounddown_time(current_time)
     timestamp_start = _rounddown_time(
         current_time - timedelta(seconds=config.scrape_delay)
+    )
+    metric_timestamp = (
+        datetime.strptime(timestamp_start, "%Y-%m-%dT%H:%M:%SZ")
+        .replace(tzinfo=UTC)
+        .timestamp()
     )
 
     # Process dataset metrics
@@ -303,16 +340,14 @@ def cloudflare_fetch_metrics(
                     continue
 
                 processed_data = _process_metrics_data(data, dataset)
-                prometheus_generate_metrics(
+                _buffer_metrics(
                     processed_data,
                     zone_name,
-                    timestamp_start,
-                    None,
-                    None,
-                    None,
-                    account.name,
-                    account.id,
+                    metric_timestamp,
+                    new_http_metrics,
+                    new_firewall_metrics,
                 )
+
                 logger.info(
                     f"Metrics generated successfully for {dataset} "
                     f"for zone: {zone_name}"
@@ -330,17 +365,20 @@ def cloudflare_fetch_metrics(
         current_quota = account.legacy_flags["enterprise_zone_quota"]["current"]
         available_quota = account.legacy_flags["enterprise_zone_quota"]["available"]
 
-        prometheus_generate_metrics(
-            None,  # Don't pass data for quota metrics
-            None,  # Don't pass zone_name for quota metrics
-            timestamp_start,
-            max_quota,
-            current_quota,
-            available_quota,
-            account.name,
-            account.id,
+        COLLECTOR.account_name = account.name
+        COLLECTOR.account_id = account.id
+        COLLECTOR.max_quota = max_quota
+        COLLECTOR.current_quota = current_quota
+        COLLECTOR.available_quota = available_quota
+        COLLECTOR.quota_timestamp = (
+            datetime.strptime(timestamp_start, "%Y-%m-%dT%H:%M:%SZ")
+            .replace(tzinfo=UTC)
+            .timestamp()
         )
     except Exception as e:
         logger.error(
             "Failed to fetch enterprise zones quota and usage", extra={"error": str(e)}
         )
+
+    # Atomic swap — replace old metrics with new ones
+    COLLECTOR.swap_metrics(new_http_metrics, new_firewall_metrics)

@@ -1,7 +1,7 @@
 import threading
 from collections.abc import Generator
 from datetime import UTC, datetime
-from typing import NotRequired, TypedDict
+from typing import Any, NotRequired, TypedDict
 
 from dotenv import load_dotenv
 from prometheus_client import REGISTRY
@@ -358,27 +358,22 @@ class CloudflareCollector:
         with self._lock:
             self.scrape_errors += 1
 
-    def cleanup_old_metrics(
+    def swap_metrics(
         self,
-        # We keep metrics for 2x scrape delay to avoid gaps in the metrics
-        max_age_seconds: int = config.scrape_delay * 2,
+        new_http: list[Any],
+        new_firewall: list[Any],
     ) -> None:
-        """Remove metrics older than max_age_seconds."""
-        current_time = datetime.now(tz=UTC).timestamp()
+        """Atomically replace all metrics with new data.
 
-        logger.debug(f"Cleaning up old metrics, max_age_seconds: {max_age_seconds}")
-
+        Only replaces if new data is non-empty, preserving last known good
+        metrics when the API returns nothing.
+        """
         with self._lock:
-            self.http_metrics_data = [
-                m
-                for m in self.http_metrics_data
-                if current_time - m.get("timestamp", 0) <= max_age_seconds
-            ]
-            self.firewall_metrics_data = [
-                m
-                for m in self.firewall_metrics_data
-                if current_time - m.get("timestamp", 0) <= max_age_seconds
-            ]
+            self.http_metrics_data = new_http
+            self.firewall_metrics_data = new_firewall
+        logger.debug(
+            f"Swapped metrics: {len(new_http)} http, {len(new_firewall)} firewall"
+        )
 
 
 # Create a global collector instance
