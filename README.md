@@ -10,7 +10,7 @@ A Prometheus exporter for Cloudflare Analytics metrics, providing real-time HTTP
 [![Security: CodeQL](https://github.com/n0zz/cloudflare-prometheus-exporter/actions/workflows/codeql.yml/badge.svg)](https://github.com/n0zz/cloudflare-prometheus-exporter/actions/workflows/codeql.yml)
 [![Security: Trivy](https://github.com/n0zz/cloudflare-prometheus-exporter/actions/workflows/security.yml/badge.svg)](https://github.com/n0zz/cloudflare-prometheus-exporter/actions/workflows/security.yml)
 [![codecov](https://codecov.io/gh/N0zz/cloudflare-prometheus-exporter/graph/badge.svg?token=P13GZXT311)](https://codecov.io/gh/N0zz/cloudflare-prometheus-exporter)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/n0zz/cloudflare-prometheus-exporter/badge)](https://api.securityscorecards.dev/projects/github.com/n0zz/cloudflare-prometheus-exporter)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/N0zz/cloudflare-prometheus-exporter/badge)](https://securityscorecards.dev/viewer/?uri=github.com/N0zz/cloudflare-prometheus-exporter)
 
 ## Features
 
