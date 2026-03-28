@@ -240,11 +240,8 @@ def cloudflare_fetch_metrics(
             # plans = client.zones.plans.list(zone_id=zone)
 
             # Using subscription to check if the zone is on the free plan
-            subscription = client.zones.subscriptions.get(zone)
-            if (
-                subscription["rate_plan"]["id"] == "cf_free"
-                and dataset not in free_datasets
-            ):
+            subscription = client.zones.subscriptions.get(zone_id=zone)
+            if subscription.rate_plan.id == "cf_free" and dataset not in free_datasets:
                 logger.info(
                     f"Zone {zone_name} is on the free plan, skipping dataset: {dataset}"
                 )
