@@ -8,7 +8,16 @@
     {
       "matchManagers": ["pep621", "uv"],
       "matchUpdateTypes": ["minor", "patch"],
-      "matchCurrentVersion": "!/^0/"
+      "matchCurrentVersion": "!/^0/",
+      "groupName": "python dependencies"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions"
+    },
+    {
+      "matchManagers": ["docker-compose", "dockerfile"],
+      "groupName": "docker images"
     }
   ],
   "docker": {
