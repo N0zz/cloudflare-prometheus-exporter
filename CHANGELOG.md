@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.1.5 (2026-03-28)
+
+### Bug Fixes
+
+- Update cloudflare SDK subscription API call for v4.3.x
+  ([#31](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/31),
+  [`0ebb339`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/0ebb3392e5fca1b22730cf439eb261da18bcbbc5))
+
+
 ## v0.1.4 (2026-03-28)
 
 ### Bug Fixes
