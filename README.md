@@ -129,7 +129,7 @@ helm install my-release cloudflare-exporter/cloudflare-prometheus-exporter
 - [Python 3.13](https://www.python.org/downloads/)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) - Python package manager
 - [just](https://github.com/casey/just#installation) - Command runner
-- [Trivy](https://aquasecurity.github.io/trivy/latest/getting-started/installation/) - Vulnerability scanner (optional, for local security scans)
+- [Trivy](https://trivy.dev/docs/latest/guide/) - Vulnerability scanner (optional, for local security scans)
 
 ### Setup
 
