@@ -36,3 +36,13 @@ jobs:
 
     - name: Run type checking (pyright)
       run: uv run pyright
+
+    - name: Set up Helm
+      uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
+
+    - name: Validate Helm chart templates
+      run: |
+        helm template test helm/cloudflare-prometheus-exporter > /tmp/helm-output.yaml
+        yq eval '.' /tmp/helm-output.yaml > /dev/null
+        echo "Rendered resources:"
+        yq eval '.kind + "/" + .metadata.name' /tmp/helm-output.yaml
