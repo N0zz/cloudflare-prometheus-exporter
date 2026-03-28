@@ -1,0 +1,25 @@
+# Query for Firewall events metrics from Cloudflare Analytics API
+query FirewallEventsAdaptive(
+  $zoneTag: String!
+  $datetimeGeq: String!
+  $datetimeLeq: String!
+) {
+  viewer {
+    zones(filter: { zoneTag: $zoneTag }) {
+      firewallEventsAdaptiveGroups(
+        filter: {
+          datetime_geq: $datetimeGeq
+          datetime_leq: $datetimeLeq
+        }
+        limit: 1000
+      ) {
+        dimensions {
+          action
+          source
+          ruleId
+        }
+        count
+      }
+    }
+  }
+}

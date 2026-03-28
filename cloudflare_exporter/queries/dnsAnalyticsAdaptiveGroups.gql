@@ -1,0 +1,35 @@
+# Query for DNS analytics metrics from Cloudflare Analytics API
+# Fetches DNS query metrics with processing time statistics
+query DnsAnalytics(
+  $zoneTag: String!
+  $datetimeGeq: String!
+  $datetimeLeq: String!
+) {
+  viewer {
+    zones(filter: { zoneTag: $zoneTag }) {
+      dnsAnalyticsAdaptiveGroups(
+        filter: {
+          datetime_geq: $datetimeGeq
+          datetime_leq: $datetimeLeq
+        }
+        limit: 2
+      ) {
+        dimensions {
+          queryType
+          responseCode
+          coloName
+        }
+        count
+        avg {
+          sampleInterval
+          processingTimeUs
+        }
+        quantiles {
+          processingTimeUsP50
+          processingTimeUsP90
+          processingTimeUsP99
+        }
+      }
+    }
+  }
+}

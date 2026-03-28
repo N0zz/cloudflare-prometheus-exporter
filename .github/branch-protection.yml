@@ -1,0 +1,15 @@
+name: Branch Protection Rules
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  protect-main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Block direct pushes to main
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "Direct pushes to main branch are not allowed"
+          exit 1

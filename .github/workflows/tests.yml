@@ -1,0 +1,96 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  unit-test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    permissions:
+      checks: write
+      id-token: write # Required for Codecov token
+
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      with:
+        python-version-file: '.python-version'
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+      with:
+        enable-cache: true
+
+    - name: Install dependencies
+      run: uv sync --frozen
+
+    - name: Setup dummy Cloudflare token
+      run: |
+        echo "CF_API_TOKEN=dummy" >> $GITHUB_ENV
+
+    - name: Run unit tests with coverage
+      run: uv run pytest tests/unit/ --cov=cloudflare_exporter --cov-report=xml
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        file: coverage.xml
+        fail_ci_if_error: true
+        flags: unittests
+        verbose: true
+
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check for Cloudflare token
+      id: check_token
+      env:
+        CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+      run: |
+        if [ -z "$CF_API_TOKEN" ]; then
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+          echo "CF_API_TOKEN not available, skipping integration tests"
+        else
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      if: steps.check_token.outputs.skip == 'false'
+
+    - name: Set up Python
+      if: steps.check_token.outputs.skip == 'false'
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      with:
+        python-version-file: '.python-version'
+
+    - name: Install uv
+      if: steps.check_token.outputs.skip == 'false'
+      uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+      with:
+        enable-cache: true
+
+    - name: Install dependencies
+      if: steps.check_token.outputs.skip == 'false'
+      run: uv sync --frozen
+
+    - name: Run integration tests
+      if: steps.check_token.outputs.skip == 'false'
+      env:
+        CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+      run: uv run pytest tests/integration/ -v
