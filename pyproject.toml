@@ -64,4 +64,14 @@ reportPrivateUsage = false
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=cloudflare_exporter --cov-report=term-missing"
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=cloudflare_exporter --cov-report=term-missing --cov-report=html --no-cov-on-fail"
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+]
