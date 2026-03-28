@@ -5,7 +5,7 @@ from unittest.mock import ANY, MagicMock, patch
 
 import pytest
 
-from cloudflare_exporter.config import CloudflareConfig
+from cloudflare_exporter.config import CloudflareConfig, CmbRegion
 from cloudflare_exporter.main import (
     main,
     metrics_collection_loop,
@@ -19,8 +19,6 @@ def mock_environment(
     mocker: MagicMock,
 ) -> tuple[MagicMock, list[str], CloudflareConfig]:
     """Set up mock environment for testing."""
-    from cloudflare_exporter.config import CmbRegion
-
     client = mocker.MagicMock()
     zones = ["023e105f4ecef8ad9ca31a8372d0c353", "023e105f4ecef8ad9ca31a8372d0c354"]
     config = CloudflareConfig(
