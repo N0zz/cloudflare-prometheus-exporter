@@ -1,6 +1,8 @@
 name: Release
 
 on:
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -10,11 +12,10 @@ permissions:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   release-dry-run:
-    if: github.event.pull_request.merged != true
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -31,7 +32,7 @@ jobs:
           no_operation_mode: "true"
 
   pr-docker:
-    if: github.event.pull_request.merged != true
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     steps:
@@ -76,7 +77,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:pr-${{ github.event.pull_request.number }}
 
   release-gh:
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.semantic_release.outputs.version }}
@@ -100,7 +101,7 @@ jobs:
 
   release-docker:
     needs: release-gh
-    if: github.event.pull_request.merged == true && needs.release-gh.outputs.released == 'true'
+    if: github.event_name == 'push' && needs.release-gh.outputs.released == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -130,7 +131,7 @@ jobs:
 
   release-chart:
     needs: release-gh
-    if: github.event.pull_request.merged == true && needs.release-gh.outputs.released == 'true'
+    if: github.event_name == 'push' && needs.release-gh.outputs.released == 'true'
     runs-on: ubuntu-latest
 
     permissions:
@@ -151,10 +152,12 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2 # v5.0.0
         env:
-          GITHUB_TOKEN: "${{ env.GITHUB_TOKEN }}"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           charts_dir: helm
           pages_branch: gh_pages
