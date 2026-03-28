@@ -327,6 +327,7 @@ def cloudflare_fetch_metrics(
                         f"GraphQL errors for zone {zone_name}: "
                         f"{response_json['errors']}"
                     )
+                    COLLECTOR.increment_error_counter()
                     continue
 
                 data = response_json["data"]["viewer"]["zones"][0].get(dataset, [])
@@ -354,6 +355,7 @@ def cloudflare_fetch_metrics(
                 )
 
             except Exception as e:
+                COLLECTOR.increment_error_counter()
                 logger.error(
                     "Failed to process metrics",
                     extra={"dataset": dataset, "zone_name": zone_name, "error": str(e)},
