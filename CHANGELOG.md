@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.2.3 (2026-03-28)
+
+### Bug Fixes
+
+- Increment scrape error counter on fetch failures
+  ([#42](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/42),
+  [`706b85e`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/706b85eb2c47a3afd0eb554b57a051974526d6ec))
+
+
 ## v0.2.2 (2026-03-28)
 
 ### Bug Fixes
