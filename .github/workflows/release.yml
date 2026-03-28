@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  release:
+    types: [ published ]
 
 permissions:
   contents: read
@@ -76,6 +78,7 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:pr-${{ github.event.pull_request.number }}
 
+  # On merge: create draft release + build RC docker image
   release-gh:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -107,8 +110,19 @@ jobs:
         uses: python-semantic-release/python-semantic-release@350c48fcb3ffcdfd2e0a235206bc2ecea6b69df0 # v10.5.3
         with:
           github_token: ${{ steps.app-token.outputs.token }}
+          vcs_release: "false"
 
-  release-docker:
+      - name: Create draft release
+        if: steps.semantic_release.outputs.released == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh release create "v${{ steps.semantic_release.outputs.version }}" \
+            --draft \
+            --title "v${{ steps.semantic_release.outputs.version }}" \
+            --generate-notes
+
+  rc-docker:
     needs: release-gh
     if: github.event_name == 'push' && needs.release-gh.outputs.released == 'true'
     runs-on: ubuntu-latest
@@ -128,19 +142,51 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push RC image
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ needs.release-gh.outputs.version }}
+            ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ needs.release-gh.outputs.version }}-rc
+
+  # On manual release publish: tag final docker image + publish chart
+  release-docker:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      - name: Get version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push release image
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:${{ steps.version.outputs.version }}
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:latest
 
   release-chart:
-    needs: release-gh
-    if: github.event_name == 'push' && needs.release-gh.outputs.released == 'true'
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
 
     permissions:
