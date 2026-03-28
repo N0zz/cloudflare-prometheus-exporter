@@ -125,7 +125,7 @@ def _make_cloudflare_request(
 
 def _filter_datasets(datasets: list[str], exclude_datasets: str | None) -> list[str]:
     if exclude_datasets:
-        excluded = exclude_datasets.split(",") if exclude_datasets else []
+        excluded = exclude_datasets.split(",")
         datasets = [dataset for dataset in datasets if dataset not in excluded]
         logger.info("Excluding datasets: %s", excluded)
         logger.info("Included datasets: %s", list(datasets))
