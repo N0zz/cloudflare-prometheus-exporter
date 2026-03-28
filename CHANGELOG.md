@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.2.0 (2026-03-28)
+
+### Features
+
+- Rc release workflow with manual promotion
+  ([#32](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/32),
+  [`3fcd4b7`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/3fcd4b7c4e42c977467aa0f351147232d3668440))
+
+
 ## v0.1.5 (2026-03-28)
 
 ### Bug Fixes
