@@ -113,12 +113,12 @@ docker run -p 8080:8080 --env-file .env cloudflare-exporter
 
 The Cloudflare Prometheus Exporter Helm chart is available for download from our GitHub Pages repository:
 
-- [Download Helm Chart](https://n0zz.github.io/cloudflare-prometheus-exporter/charts/index.yaml)
+- [Download Helm Chart](https://n0zz.github.io/cloudflare-prometheus-exporter/index.yaml)
 
 You can install the chart using the following command:
 
 ```bash
-helm repo add cloudflare-exporter https://n0zz.github.io/cloudflare-prometheus-exporter/charts
+helm repo add cloudflare-exporter https://n0zz.github.io/cloudflare-prometheus-exporter
 helm install my-release cloudflare-exporter/cloudflare-prometheus-exporter
 ```
 
