@@ -36,11 +36,11 @@ dev = [
 ]
 
 [tool.semantic_release]
-version_toml = [
-    "pyproject.toml:project.version",
+version_toml = ["pyproject.toml:project.version"]
+version_variables = [
+    "cloudflare_exporter/__init__.py:__version__",
     "helm/cloudflare-prometheus-exporter/Chart.yaml:appVersion",
 ]
-version_variables = ["cloudflare_exporter/__init__.py:__version__"]
 allow_zero_version = true
 branch = "main"
 upload_to_pypi = false
