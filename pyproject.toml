@@ -27,7 +27,7 @@ packages = ["cloudflare_exporter"]
 
 [dependency-groups]
 dev = [
-    "pytest==8.4.2",
+    "pytest==9.0.2",
     "pytest-cov==7.1.0",
     "pytest-mock==3.15.1",
     "pyright==1.1.408",
