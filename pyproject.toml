@@ -45,7 +45,7 @@ allow_zero_version = true
 branch = "main"
 upload_to_pypi = false
 upload_to_release = true
-build_command = "pip install build && python -m build"
+build_command = "pip install uv && uv lock"
 commit_message = "chore(release): bump version to {version}"
 
 [tool.ruff]
