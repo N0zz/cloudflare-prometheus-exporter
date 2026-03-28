@@ -10,7 +10,10 @@ from collections.abc import Generator
 import pytest
 from prometheus_client import REGISTRY
 
-from cloudflare_exporter.cloudflare_exporter import cloudflare_fetch_metrics
+from cloudflare_exporter.cloudflare_exporter import (
+    cloudflare_define_zones,
+    cloudflare_fetch_metrics,
+)
 from cloudflare_exporter.cloudflare_setup import (
     cloudflare_setup_client,
     cloudflare_verify_credentials,
@@ -46,8 +49,6 @@ def test_fetch_metrics_produces_output() -> None:
     """Test that a real metrics fetch populates the collector."""
     client, account = cloudflare_setup_client()
     config = setup_config()
-
-    from cloudflare_exporter.cloudflare_exporter import cloudflare_define_zones
 
     zones = cloudflare_define_zones(client, config)
     assert len(zones) > 0, "Expected at least one zone"

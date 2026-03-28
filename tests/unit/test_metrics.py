@@ -1,3 +1,5 @@
+import threading
+
 import pytest
 
 from cloudflare_exporter.metrics import (
@@ -187,7 +189,6 @@ def test_collect(
 
 def test_thread_safety(collector: CloudflareCollector) -> None:
     """Test thread safety of metrics updates."""
-    import threading
 
     def update_metrics(index: int) -> None:
         data: list[HttpRequestEntry | FirewallEventEntry] = [

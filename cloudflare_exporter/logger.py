@@ -14,26 +14,24 @@ class CustomJsonFormatter(JsonFormatter):
 
     def add_fields(
         self,
-        log_record: dict[str, Any],
+        log_data: dict[str, Any],
         record: logging.LogRecord,
         message_dict: dict[str, Any],
     ) -> None:
         """Add custom fields to the log record."""
-        super().add_fields(log_record, record, message_dict)
+        super().add_fields(log_data, record, message_dict)
 
         # Rename fields for better clarity
-        log_record["level"] = record.levelname
-        log_record["timestamp"] = datetime.fromtimestamp(
-            record.created, UTC
-        ).isoformat()
+        log_data["level"] = record.levelname
+        log_data["timestamp"] = datetime.fromtimestamp(record.created, UTC).isoformat()
 
         # Add additional context
-        log_record["logger"] = record.name
-        log_record["function"] = record.funcName
+        log_data["logger"] = record.name
+        log_data["function"] = record.funcName
 
         # Remove fields we've renamed
-        log_record.pop("levelname", None)
-        log_record.pop("asctime", None)
+        log_data.pop("levelname", None)
+        log_data.pop("asctime", None)
 
 
 def setup_logger(log_level: str) -> logging.Logger:
