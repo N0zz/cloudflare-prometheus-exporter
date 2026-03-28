@@ -8,6 +8,7 @@ on:
       - 'pyproject.toml'
       - 'uv.lock'
       - 'Dockerfile'
+      - 'helm/**'
   pull_request:
     branches: [ main ]
     paths:
@@ -15,6 +16,7 @@ on:
       - 'pyproject.toml'
       - 'uv.lock'
       - 'Dockerfile'
+      - 'helm/**'
   release:
     types: [ published ]
 
@@ -178,7 +180,7 @@ jobs:
             ${{ env.DOCKERHUB_USERNAME }}/cloudflare-prometheus-exporter:latest
 
   release-chart:
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' || github.event_name == 'push'
     runs-on: ubuntu-latest
 
     permissions:
