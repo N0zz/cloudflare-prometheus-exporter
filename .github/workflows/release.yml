@@ -117,10 +117,37 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          gh release create "v${{ steps.semantic_release.outputs.version }}" \
+          VERSION="${{ steps.semantic_release.outputs.version }}"
+          REPO="nulltix/cloudflare-prometheus-exporter"
+          CHART_REPO="https://n0zz.github.io/cloudflare-prometheus-exporter"
+
+          gh release create "v${VERSION}" \
             --draft \
-            --title "v${{ steps.semantic_release.outputs.version }}" \
+            --title "v${VERSION}" \
             --generate-notes
+
+          NOTES=$(gh release view "v${VERSION}" --json body -q .body)
+          gh release edit "v${VERSION}" --notes "${NOTES}
+
+          ## Docker
+
+          \`\`\`bash
+          docker pull ${REPO}:${VERSION}-rc
+          # After publishing this release:
+          docker pull ${REPO}:${VERSION}
+          \`\`\`
+
+          [View on DockerHub](https://hub.docker.com/r/${REPO}/tags)
+
+          ## Helm Chart
+
+          \`\`\`bash
+          helm repo add cloudflare-exporter ${CHART_REPO}
+          helm repo update
+          helm install my-release cloudflare-exporter/cloudflare-prometheus-exporter
+          \`\`\`
+
+          [Chart Repository](${CHART_REPO})"
 
   rc-docker:
     needs: release-gh
@@ -224,3 +251,24 @@ jobs:
         with:
           charts_dir: helm
           pages_branch: gh_pages
+
+      - name: Update chart release notes
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          CHART_REPO="https://n0zz.github.io/cloudflare-prometheus-exporter"
+          CHART_TAG=$(gh release list --json tagName,isDraft -q '.[] | select(.tagName | startswith("cloudflare-prometheus-exporter-")) | .tagName' | head -1)
+          if [ -n "$CHART_TAG" ]; then
+            NOTES=$(gh release view "$CHART_TAG" --json body -q .body)
+            gh release edit "$CHART_TAG" --notes "${NOTES}
+
+          ## Install
+
+          \`\`\`bash
+          helm repo add cloudflare-exporter ${CHART_REPO}
+          helm repo update
+          helm install my-release cloudflare-exporter/cloudflare-prometheus-exporter
+          \`\`\`
+
+          [Chart Repository](${CHART_REPO}) | [Documentation](https://github.com/N0zz/cloudflare-prometheus-exporter)"
+          fi
