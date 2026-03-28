@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.2.2 (2026-03-28)
+
+### Bug Fixes
+
+- Atomic metrics swap to eliminate gaps between cleanup and fetch
+  ([#41](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/41),
+  [`9a34c4f`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/9a34c4fbd02fefda646898c9e305aa3ede3cfff3))
+
+
 ## v0.2.1 (2026-03-28)
 
 ### Bug Fixes
