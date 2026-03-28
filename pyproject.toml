@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cloudflare-prometheus-exporter"
-version = "0.1.1"
+version = "0.1.2"
 description = "A Prometheus exporter for Cloudflare Analytics metrics"
 readme = "README.md"
 requires-python = ">=3.13"
