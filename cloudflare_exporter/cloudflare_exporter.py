@@ -225,10 +225,12 @@ def cloudflare_fetch_metrics(
         "Content-Type": "application/json",
     }
 
+    # Shift query window back by 2 minutes to account for Cloudflare's
+    # analytics data aggregation delay
     current_time = datetime.now(UTC)
-    timestamp_end = _rounddown_time(current_time)
+    timestamp_end = _rounddown_time(current_time - timedelta(minutes=2))
     timestamp_start = _rounddown_time(
-        current_time - timedelta(seconds=config.scrape_delay)
+        current_time - timedelta(minutes=2, seconds=config.scrape_delay)
     )
 
     # Process dataset metrics
