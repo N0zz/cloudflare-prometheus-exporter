@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cloudflare-prometheus-exporter"
+version = "0.1.0"
+description = "A Prometheus exporter for Cloudflare Analytics metrics"
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+authors = [
+    {name = "Krzysztof Kołodziejczyk", email = "k.kolodziejczyk3@gmail.com"},
+]
+dependencies = [
+    "cloudflare==4.2.0",
+    "prometheus-client==0.21.1",
+    "python-dotenv==1.0.1",
+    "python-json-logger==3.3.0",
+    "requests==2.32.4",
+    "pydantic==2.10.6",
+    "pydantic-settings==2.8.1",
+]
+
+[tool.setuptools]
+packages = ["cloudflare_exporter"]
+
+[dependency-groups]
+dev = [
+    "pytest==8.3.5",
+    "pytest-cov==6.0.0",
+    "pytest-mock==3.14.0",
+    "pyright==1.1.400",
+    "bandit==1.8.3",
+    "ruff==0.9.10",
+]
+
+[tool.semantic_release]
+version_toml = [
+    "pyproject.toml:project.version",
+    "helm/cloudflare-prometheus-exporter/Chart.yaml:appVersion",
+]
+version_variables = ["cloudflare_exporter/__init__.py:__version__"]
+allow_zero_version = true
+branch = "main"
+upload_to_pypi = false
+upload_to_release = true
+build_command = "pip install build && python -m build"
+commit_message = "chore(release): bump version to {version}"
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+lint.select = ["E", "W", "F", "B", "I", "N", "UP", "PL", "RUF", "SIM", "PTH", "DTZ", "C4", "A"]
+
+[tool.ruff.lint.pylint]
+max-args = 10
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "standard"
+reportPrivateUsage = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=cloudflare_exporter --cov-report=term-missing"

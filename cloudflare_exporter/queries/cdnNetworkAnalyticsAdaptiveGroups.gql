@@ -1,0 +1,23 @@
+# Query for CDN network analytics metrics from Cloudflare Analytics API
+query CdnNetworkAnalytics(
+  $accountId: String!
+  $datetimeGeq: String!
+  $datetimeLeq: String!
+) {
+  viewer {
+    accounts(filter: { accountTag: $accountId }) {
+      cdnNetworkAnalyticsAdaptiveGroups(
+        filter: {
+          datetime_geq: $datetimeGeq
+          datetime_leq: $datetimeLeq
+        }
+        limit: 1000
+      ) {
+        sum {
+          bits
+          packets
+        }
+      }
+    }
+  }
+}

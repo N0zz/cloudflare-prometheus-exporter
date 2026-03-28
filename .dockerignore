@@ -1,0 +1,45 @@
+# Python specific
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.Python
+**/.python-version
+**/.mypy_cache
+**/.pytest_cache
+**/.ruff_cache
+**/.coverage
+**/.tox
+**/*.egg-info
+**/*.egg
+
+# Environment and IDE
+**/.env
+**/.venv
+**/venv
+**/env
+**/.idea
+**/.vscode
+**/.DS_Store
+
+# Version control
+**/.git
+**/.gitignore
+**/.gitattributes
+
+# Build and documentation
+**/dist
+**/build
+**/docs
+**/README.md
+**/CHANGELOG.md
+**/LICENSE
+
+# Development and test files
+**/tests
+**/*.log
+**/tmp
+**/temp
+**/*.md
+**/docker-compose*.yml
+**/Dockerfile*
