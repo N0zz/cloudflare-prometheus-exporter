@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.2.5 (2026-03-29)
+
+### Bug Fixes
+
+- **deps**: Update dependency python-json-logger to v4.1.0
+  ([#50](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/50),
+  [`89fded0`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/89fded041049d013b6e534027962f453c88d56a6))
+
+
 ## v0.2.4 (2026-03-28)
 
 ### Bug Fixes

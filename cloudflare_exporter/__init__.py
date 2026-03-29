@@ -3,7 +3,7 @@
 A Prometheus exporter for Cloudflare analytics and metrics.
 """
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 __author__ = "Krzysztof Kołodziejczyk"
 __license__ = "MIT"
 __email__ = "krzysztof.kolodziejczyk@gmail.com"
