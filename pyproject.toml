@@ -39,7 +39,6 @@ dev = [
 version_toml = ["pyproject.toml:project.version"]
 version_variables = [
     "cloudflare_exporter/__init__.py:__version__",
-    "helm/cloudflare-prometheus-exporter/Chart.yaml:appVersion",
 ]
 allow_zero_version = true
 branch = "main"
