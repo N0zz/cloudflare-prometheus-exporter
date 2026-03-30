@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v0.2.6 (2026-03-30)
+
+### Bug Fixes
+
+- Remove Chart.yaml appVersion from semantic-release
+  ([#52](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/52),
+  [`4ed1b8c`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/4ed1b8c847908c5316b1c7b58220473b34ec800d))
+
+- Remove Chart.yaml appVersion from semantic-release variables
+  ([#52](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/52),
+  [`4ed1b8c`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/4ed1b8c847908c5316b1c7b58220473b34ec800d))
+
+
 ## v0.2.5 (2026-03-29)
 
 ### Bug Fixes
