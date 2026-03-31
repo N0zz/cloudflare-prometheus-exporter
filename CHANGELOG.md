@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.2.7 (2026-03-31)
+
+### Bug Fixes
+
+- **deps**: Update dependency requests to v2.33.1
+  ([#53](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/53),
+  [`b6741bd`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/b6741bd918338106ed18039366476487bc4b659e))
+
+
 ## v0.2.6 (2026-03-30)
 
 ### Bug Fixes
