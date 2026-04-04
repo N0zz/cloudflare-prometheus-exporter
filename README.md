@@ -197,6 +197,8 @@ This project includes several security scanning tools:
 
 2. **Bandit** - Static application security testing (SAST) for Python code
 
+3. **Zizmor** - GitHub Actions workflow security auditing (action pinning, injection risks, permissions)
+
 Security scans run:
 
 - On every push to main
