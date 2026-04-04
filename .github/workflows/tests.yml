@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      checks: write
       id-token: write # Required for Codecov token
 
     steps:
