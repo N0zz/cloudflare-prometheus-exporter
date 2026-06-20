@@ -41,11 +41,11 @@ jobs:
       run: uv run pytest tests/unit/ --cov=cloudflare_exporter --cov-report=xml
 
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
+      uses: codecov/codecov-action@8cad3ba95e5920c42f44492e54bc9639cba47959 # v6.0.2
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
-        file: coverage.xml
+        files: coverage.xml
         fail_ci_if_error: true
         flags: unittests
         verbose: true
