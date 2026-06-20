@@ -2,6 +2,89 @@
 
 <!-- version list -->
 
+## v0.2.8 (2026-06-20)
+
+### Bug Fixes
+
+- Pin actions/checkout to commit SHA in dockerhub-description workflow
+  ([#58](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/58),
+  [`0ce7f85`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/0ce7f856f5e1a49210eb45ee948a4ee6fb56f5c8))
+
+### Chores
+
+- **deps**: Update astral-sh/setup-uv action to v8
+  ([#51](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/51),
+  [`6696b68`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/6696b681ec45e3d0ad7fd0b455f254189223dd19))
+
+- **deps**: Update dependency ruff to v0.15.18
+  ([#62](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/62),
+  [`12dd6be`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/12dd6be55a62e37191af25f0327c5f7283f88df9))
+
+- **deps**: Update dependency ruff to v0.15.9
+  ([#20](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/20),
+  [`b3a3415`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/b3a3415e856b93e6e1b1851b56979f8d3a304f54))
+
+- **deps**: Update docker/login-action action to v4.1.0
+  ([#55](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/55),
+  [`b58b4aa`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/b58b4aafa94cb19f89067d47c7d63cc92094ee8a))
+
+- **deps**: Update ghcr.io/astral-sh/uv docker digest to 90bbb3c
+  ([#54](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/54),
+  [`1a4f676`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/1a4f67670ca4269019106aaf89a9c4b5cada6d51))
+
+- **deps**: Update github actions
+  ([#57](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/57),
+  [`9b9f43b`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/9b9f43b728667c31ef21c4b3b14d0f41f2cf58ac))
+
+- **deps**: Update github actions (major)
+  ([#57](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/57),
+  [`9b9f43b`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/9b9f43b728667c31ef21c4b3b14d0f41f2cf58ac))
+
+### Continuous Integration
+
+- Add top-level permissions to dockerhub-description workflow
+  ([#60](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/60),
+  [`b7a76e6`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/b7a76e6846691d229643b0b3f66aa5e9eb34c0f5))
+
+- Add workflow to sync README to Docker Hub description
+  ([#56](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/56),
+  [`62cf75f`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/62cf75fb47cc72b7dc96514112601629189ba1b2))
+
+- Add workflow_dispatch trigger and pin action to commit hash
+  ([#56](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/56),
+  [`62cf75f`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/62cf75fb47cc72b7dc96514112601629189ba1b2))
+
+- Add zizmor workflow audit and rename dockerhub description workflow
+  ([#59](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/59),
+  [`cd45b61`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/cd45b61279ee2577dfb009bc9b5574695e15ef5c))
+
+- Add zizmor workflow audit and rename dockerhub workflow
+  ([#59](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/59),
+  [`cd45b61`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/cd45b61279ee2577dfb009bc9b5574695e15ef5c))
+
+- Bump codecov-action to v6.0.2 to fix GPG key fetch
+  ([#63](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/63),
+  [`623fa9e`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/623fa9ef87312048ed4aa0b50080fff80c3e7bd0))
+
+- Fix Codecov upload failing on GPG signature verification
+  ([#63](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/63),
+  [`623fa9e`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/623fa9ef87312048ed4aa0b50080fff80c3e7bd0))
+
+- Sync README to Docker Hub description
+  ([#56](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/56),
+  [`62cf75f`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/62cf75fb47cc72b7dc96514112601629189ba1b2))
+
+- Tighten workflow permissions (add to dockerhub, remove checks:write from tests)
+  ([#60](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/60),
+  [`b7a76e6`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/b7a76e6846691d229643b0b3f66aa5e9eb34c0f5))
+
+### Documentation
+
+- Mention zizmor in security section of README
+  ([#59](https://github.com/N0zz/cloudflare-prometheus-exporter/pull/59),
+  [`cd45b61`](https://github.com/N0zz/cloudflare-prometheus-exporter/commit/cd45b61279ee2577dfb009bc9b5574695e15ef5c))
+
+
 ## v0.2.7 (2026-03-31)
 
 ### Bug Fixes
