@@ -16,7 +16,7 @@ jobs:
       id-token: write # Required for Codecov token
 
     steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       with:
         fetch-depth: 0
 
@@ -41,7 +41,7 @@ jobs:
       run: uv run pytest tests/unit/ --cov=cloudflare_exporter --cov-report=xml
 
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@8cad3ba95e5920c42f44492e54bc9639cba47959 # v6.0.2
+      uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
@@ -67,7 +67,7 @@ jobs:
           echo "skip=false" >> "$GITHUB_OUTPUT"
         fi
 
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       if: steps.check_token.outputs.skip == 'false'
 
     - name: Set up Python
