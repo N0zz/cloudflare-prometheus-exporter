@@ -13,7 +13,7 @@ authors = [
     {name = "Krzysztof Kołodziejczyk", email = "k.kolodziejczyk3@gmail.com"},
 ]
 dependencies = [
-    "cloudflare==4.3.1",
+    "cloudflare==5.4.0",
     "prometheus-client==0.24.1",
     "python-dotenv==1.2.2",
     "python-json-logger==4.1.0",
