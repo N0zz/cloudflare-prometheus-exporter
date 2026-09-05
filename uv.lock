@@ -106,7 +106,7 @@ wheels = [
 
 [[package]]
 name = "cloudflare"
-version = "4.3.1"
+version = "5.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -116,14 +116,14 @@ dependencies = [
     { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5d/48/e481c0a9b9010a5c41b5ca78ff9fbe00dc8a9a4d39da5af610a4ec49c7f7/cloudflare-4.3.1.tar.gz", hash = "sha256:b1e1c6beeb8d98f63bfe0a1cba874fc4e22e000bcc490544f956c689b3b5b258", size = 1933187, upload-time = "2025-06-16T21:43:18.716Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/08/c7a44cda1b380d44e96f095b35b7228f67c2734c31c7a9fdad810fb5291e/cloudflare-5.7.0.tar.gz", hash = "sha256:0ca2fb6017e8077bd798211d2505aa2cad186a2dac14a20aae57b8ffe43fb38b", size = 3436983, upload-time = "2026-09-04T21:56:53.22Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/8f/c6c543565efd3144da4304efa5917aac06b6416a8663a6defe0e9b2b7569/cloudflare-4.3.1-py3-none-any.whl", hash = "sha256:6927135a5ee5633d6e2e1952ca0484745e933727aeeb189996d2ad9d292071c6", size = 4406465, upload-time = "2025-06-16T21:43:17.3Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/82/f3e409df5e4381cb1d0cb4eb855462b3a23d76ea8120986344350d9008d3/cloudflare-5.7.0-py3-none-any.whl", hash = "sha256:69eda5c3c05f8a6acc1341fe89628e8c145d45d712bda77ff2a7150a70262085", size = 7285193, upload-time = "2026-09-04T21:56:55.219Z" },
 ]
 
 [[package]]
 name = "cloudflare-prometheus-exporter"
-version = "0.2.7"
+version = "0.2.8"
 source = { editable = "." }
 dependencies = [
     { name = "cloudflare" },
@@ -147,7 +147,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cloudflare", specifier = "==4.3.1" },
+    { name = "cloudflare", specifier = "==5.7.0" },
     { name = "prometheus-client", specifier = "==0.24.1" },
     { name = "pydantic", specifier = "==2.12.5" },
     { name = "pydantic-settings", specifier = "==2.13.1" },
