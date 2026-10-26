@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.13"
 
 [[package]]
@@ -106,7 +106,7 @@ wheels = [
 
 [[package]]
 name = "cloudflare"
-version = "4.3.1"
+version = "5.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -116,14 +116,14 @@ dependencies = [
     { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5d/48/e481c0a9b9010a5c41b5ca78ff9fbe00dc8a9a4d39da5af610a4ec49c7f7/cloudflare-4.3.1.tar.gz", hash = "sha256:b1e1c6beeb8d98f63bfe0a1cba874fc4e22e000bcc490544f956c689b3b5b258", size = 1933187, upload-time = "2025-06-16T21:43:18.716Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4b/52/5e736d63637e79c2381045250dbb6154a1fb4da8f3fd47518bff406c24d2/cloudflare-5.9.0.tar.gz", hash = "sha256:1c9b9e243602c754e03636204272422dc45776f3babdc67f8341ca4d559d49e8", size = 3664424, upload-time = "2026-10-03T02:55:24.989Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/8f/c6c543565efd3144da4304efa5917aac06b6416a8663a6defe0e9b2b7569/cloudflare-4.3.1-py3-none-any.whl", hash = "sha256:6927135a5ee5633d6e2e1952ca0484745e933727aeeb189996d2ad9d292071c6", size = 4406465, upload-time = "2025-06-16T21:43:17.3Z" },
+    { url = "https://files.pythonhosted.org/packages/13/d4/6d3ed77313ce1fbcf209c4aca50407c338114e71d864cbc49b1cd686b966/cloudflare-5.9.0-py3-none-any.whl", hash = "sha256:70f0c966c26802837fe7ebe95a7b4a14c723159e742bc49d34642b21a2dc11b5", size = 7707263, upload-time = "2026-10-03T02:55:22.596Z" },
 ]
 
 [[package]]
 name = "cloudflare-prometheus-exporter"
-version = "0.2.7"
+version = "0.2.8"
 source = { editable = "." }
 dependencies = [
     { name = "cloudflare" },
@@ -147,7 +147,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cloudflare", specifier = "==4.3.1" },
+    { name = "cloudflare", specifier = "==5.9.0" },
     { name = "prometheus-client", specifier = "==0.24.1" },
     { name = "pydantic", specifier = "==2.12.5" },
     { name = "pydantic-settings", specifier = "==2.13.1" },
